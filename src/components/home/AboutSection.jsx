@@ -8,8 +8,6 @@ import {
 } from '../../data/about'
 
 function AboutSection() {
-  const resumeHref = `data:text/plain;charset=utf-8,${encodeURIComponent(heroProfile.resumeText)}`
-
   return (
     <section className="page-section about-section" id="about" aria-labelledby="about-title">
       <div className="container">
@@ -51,7 +49,7 @@ function AboutSection() {
               <div className="about-card-footer">
                 <a
                   className="about-button about-button-outline"
-                  href={resumeHref}
+                  href={heroProfile.resumeUrl}
                   download={heroProfile.resumeFilename}
                 >
                   <FiDownload aria-hidden="true" />
@@ -100,7 +98,7 @@ function AboutSection() {
                 </a>
                 <a
                   className="about-button about-button-secondary"
-                  href={resumeHref}
+                  href={heroProfile.resumeUrl}
                   download={heroProfile.resumeFilename}
                 >
                   <FiDownload aria-hidden="true" />

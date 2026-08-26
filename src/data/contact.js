@@ -1,7 +1,10 @@
-import { FiClock, FiGithub, FiLinkedin, FiMail, FiMapPin, FiX } from 'react-icons/fi'
+import { FiClock, FiGithub, FiInstagram, FiLinkedin, FiMail, FiMapPin } from 'react-icons/fi'
 import { socialLinks as siteSocialLinks } from './siteContent'
 
-export const contactEmail = 'your.email@example.com'
+export const contactEmail = 'syedhussainalii2003@gmail.com'
+
+const socialLinkHref = (label) =>
+  siteSocialLinks.find((link) => link.label === label)?.href ?? '#0'
 
 export const contactIntro = {
   eyebrow: "LET'S CONNECT",
@@ -42,21 +45,21 @@ export const contactSocialLinks = [
   {
     label: 'LinkedIn',
     icon: FiLinkedin,
-    href: siteSocialLinks.find((link) => link.label === 'LinkedIn')?.href ?? '#0',
+    href: socialLinkHref('LinkedIn'),
   },
   {
     label: 'GitHub',
     icon: FiGithub,
-    href: siteSocialLinks.find((link) => link.label === 'GitHub')?.href ?? '#0',
+    href: socialLinkHref('GitHub'),
   },
   {
     label: 'Email',
     icon: FiMail,
-    href: `mailto:${contactEmail}`,
+    href: socialLinkHref('Email'),
   },
   {
-    label: 'X',
-    icon: FiX,
-    href: siteSocialLinks.find((link) => link.label === 'Twitter')?.href ?? '#0',
+    label: 'Instagram',
+    icon: FiInstagram,
+    href: socialLinkHref('Instagram'),
   },
 ]

@@ -1,8 +1,6 @@
 import { heroProfile } from '../../data/hero'
 
 function HeroContent({ currentWord }) {
-  const resumeHref = `data:text/plain;charset=utf-8,${encodeURIComponent(heroProfile.resumeText)}`
-
   return (
     <div className="hero-copy">
       <p className="hero-eyebrow">{heroProfile.greeting}</p>
@@ -19,7 +17,7 @@ function HeroContent({ currentWord }) {
         <a className="hero-button hero-button-primary" href="#portfolio">
           View Projects
         </a>
-        <a className="hero-button hero-button-secondary" href={resumeHref} download={heroProfile.resumeFilename}>
+        <a className="hero-button hero-button-secondary" href={heroProfile.resumeUrl} download={heroProfile.resumeFilename}>
           Download Resume
         </a>
       </div>

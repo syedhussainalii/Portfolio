@@ -17,9 +17,8 @@ export const navigationItems = [
 export const languageItems = ["ENG", "JAP"];
 
 export const socialLinks = [
-  { label: "Twitter", iconClass: "ion-logo-twitter", href: "#0" },
-  { label: "Facebook", iconClass: "ion-logo-facebook", href: "#0" },
-  { label: "LinkedIn", iconClass: "ion-logo-linkedin", href: "#0" },
-  { label: "GitHub", iconClass: "ion-logo-github", href: "#0" },
-  { label: "Instagram", iconClass: "ion-logo-instagram", href: "#0" },
+  { label: "LinkedIn", iconClass: "ion-logo-linkedin", href: "https://www.linkedin.com/in/hussain-ali-aa138824b/" },
+  { label: "GitHub", iconClass: "ion-logo-github", href: "https://github.com/syedhussainalii" },
+  { label: "Email", iconClass: "ion-ios-mail", href: "https://mail.google.com/mail/?view=cm&fs=1&to=syedhussainalii2003@gmail.com" },
+  { label: "Instagram", iconClass: "ion-logo-instagram", href: "https://www.instagram.com/syedhussainalii/?hl=en" },
 ];
