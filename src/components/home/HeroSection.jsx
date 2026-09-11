@@ -21,7 +21,7 @@ function HeroSection({ heroWords, activeWordIndex }) {
           </div>
           <div className="col-12 col-lg-6 hero-visual-column">
             <HeroImage />
-          </div>
+          </div>  
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ProjectCard from '../cards/ProjectCard'
 
-function ProjectsSection({ filters, projects }) {
+function ProjectsSection({ filters, projects, onModalOpenChange }) {
   const sectionRef = useRef(null)
   const lastActiveElementRef = useRef(null)
   const modalCloseButtonRef = useRef(null)
@@ -95,6 +95,15 @@ function ProjectsSection({ filters, projects }) {
     return projects.filter((project) => project.category === displayFilter)
   }, [displayFilter, projects])
 
+  const handleClose = useCallback(() => {
+    setIsClosing(true)
+    setTimeout(() => {
+      setSelectedProject(null)
+      setIsClosing(false)
+      onModalOpenChange(false)
+    }, 280) // match animation duration
+  }, [onModalOpenChange])
+
   // ESC key listener for closing modal
   useEffect(() => {
     if (!selectedProject) {
@@ -109,20 +118,13 @@ function ProjectsSection({ filters, projects }) {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectedProject])
+  }, [selectedProject, handleClose])
 
   const handleOpenProject = (project, event) => {
     lastActiveElementRef.current = event.currentTarget
     setIsClosing(false)
     setSelectedProject(project)
-  }
-
-  const handleClose = () => {
-    setIsClosing(true)
-    setTimeout(() => {
-      setSelectedProject(null)
-      setIsClosing(false)
-    }, 280) // match animation duration
+    onModalOpenChange(true)
   }
 
   return (

@@ -8,6 +8,7 @@ import ProjectsSection from './components/home/ProjectsSection'
 import ServicesSection from './components/home/ServicesSection'
 import TechStackSection from './components/home/TechStackSection'
 import Footer from './components/layout/Footer'
+import AmbientBackground from './components/layout/AmbientBackground'
 import Navbar from './components/layout/Navbar'
 import Preloader from './components/layout/Preloader'
 import { services } from './data/services'
@@ -22,6 +23,7 @@ import { projectFilters, projects } from './data/projects'
 function App() {
   const [isLoading, setIsLoading] = useState(true)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false)
   const [activeWordIndex, setActiveWordIndex] = useState(0)
 
   useEffect(() => {
@@ -39,10 +41,12 @@ function App() {
 
   return (
     <>
+      <AmbientBackground />
       <Preloader isLoading={isLoading} />
       <Navbar
         navigationItems={navigationItems}
         isMenuOpen={isMenuOpen}
+        isProjectModalOpen={isProjectModalOpen}
         onToggleMenu={() => setIsMenuOpen((currentValue) => !currentValue)}
         onCloseMenu={() => setIsMenuOpen(false)}
       />
@@ -58,7 +62,16 @@ function App() {
         {/* <ServicesSection services={services} /> */}
         <ServicesSection services={services} /> 
         {/* <ResumeSection /> */}
-        <ProjectsSection filters={projectFilters} projects={projects} />
+        <ProjectsSection
+          filters={projectFilters}
+          projects={projects}
+          onModalOpenChange={(isOpen) => {
+            setIsProjectModalOpen(isOpen)
+            if (isOpen) {
+              setIsMenuOpen(false)
+            }
+          }}
+        />
         <CertificationsSection />
         <ContactSection />
       </main>

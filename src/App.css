@@ -3,12 +3,18 @@
    ========================================================================== */
 
 #root {
+  isolation: isolate;
   min-height: 100vh;
   overflow: visible;
 }
 
+#root > :not(.ambient-background) {
+  position: relative;
+  z-index: 1;
+}
+
 body {
-  background-color: #101010;
+  background-color: #0a0a0c;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -19,6 +25,96 @@ body {
 
 #overlay-effect {
   pointer-events: none;
+}
+
+/* ===========================================================================
+   GLOBAL AMBIENT BACKGROUND
+   =========================================================================== */
+
+.ambient-background {
+  --spotlight-x: 55vw;
+  --spotlight-y: 24vh;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  z-index: 0;
+}
+
+.ambient-background__spotlight {
+  background: radial-gradient(
+    circle 26rem at var(--spotlight-x) var(--spotlight-y),
+    rgba(255, 255, 255, 0.055),
+    rgba(255, 255, 255, 0.018) 28%,
+    transparent 68%
+  );
+  inset: 0;
+  position: absolute;
+}
+
+.ambient-background__blob {
+  background: radial-gradient(circle, rgba(145, 151, 164, 0.08), transparent 68%);
+  border-radius: 50%;
+  filter: blur(28px);
+  height: min(58vw, 52rem);
+  opacity: 0.72;
+  position: absolute;
+  transform: translate3d(0, 0, 0);
+  width: min(58vw, 52rem);
+  will-change: transform;
+}
+
+.ambient-background__blob--one {
+  animation: ambientDriftOne 34s ease-in-out infinite alternate;
+  left: -22rem;
+  top: -18rem;
+}
+
+.ambient-background__blob--two {
+  animation: ambientDriftTwo 27s ease-in-out infinite alternate;
+  background: radial-gradient(circle, rgba(108, 113, 124, 0.07), transparent 70%);
+  bottom: -26rem;
+  right: -18rem;
+}
+
+.ambient-background__blob--three {
+  animation: ambientDriftThree 39s ease-in-out infinite alternate;
+  background: radial-gradient(circle, rgba(179, 169, 160, 0.045), transparent 70%);
+  height: min(46vw, 42rem);
+  left: 34%;
+  top: 34%;
+  width: min(46vw, 42rem);
+}
+
+@keyframes ambientDriftOne {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(18vw, 13vh, 0) scale(1.12); }
+}
+
+@keyframes ambientDriftTwo {
+  from { transform: translate3d(0, 0, 0) scale(1.04); }
+  to { transform: translate3d(-15vw, -16vh, 0) scale(0.94); }
+}
+
+@keyframes ambientDriftThree {
+  from { transform: translate3d(-4vw, -5vh, 0) scale(0.92); }
+  to { transform: translate3d(7vw, 8vh, 0) scale(1.08); }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .ambient-background__spotlight {
+    background: radial-gradient(
+      circle 26rem at 50% -8rem,
+      rgba(255, 255, 255, 0.05),
+      transparent 72%
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-background__blob {
+    animation: none;
+  }
 }
 
 html {
@@ -48,17 +144,11 @@ section[id] {
   justify-content: center;
   position: relative;
   padding: clamp(96px, 11.5vh, 136px) 0 clamp(64px, 7vh, 96px);
-  background:
-    radial-gradient(circle at 15% 20%, rgba(34, 197, 94, 0.2), transparent 28%),
-    radial-gradient(circle at 85% 18%, rgba(249, 115, 22, 0.18), transparent 24%),
-    linear-gradient(135deg, #0d1014 0%, #11161d 48%, #08090c 100%);
+  background: transparent;
 }
 
 .home-area::before {
-  background:
-    radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.04), transparent 55%),
-    radial-gradient(circle at 30% 70%, rgba(34, 197, 94, 0.08), transparent 22%),
-    radial-gradient(circle at 78% 62%, rgba(249, 115, 22, 0.08), transparent 26%);
+  background: none;
   content: '';
   inset: 0;
   pointer-events: none;
@@ -66,10 +156,7 @@ section[id] {
 }
 
 .home-area::after {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 72px 72px;
+  background: none;
   content: '';
   inset: 0;
   opacity: 0.12;
@@ -92,7 +179,7 @@ section[id] {
 }
 
 .hero-glow-one {
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.28) 0%, rgba(34, 197, 94, 0) 72%);
+  display: none;
   height: 34rem;
   left: -6rem;
   top: 8rem;
@@ -100,7 +187,7 @@ section[id] {
 }
 
 .hero-glow-two {
-  background: radial-gradient(circle, rgba(249, 115, 22, 0.28) 0%, rgba(249, 115, 22, 0) 72%);
+  display: none;
   bottom: -5rem;
   height: 26rem;
   right: 8%;
@@ -108,14 +195,7 @@ section[id] {
 }
 
 .hero-noise {
-  inset: 0;
-  opacity: 0.05;
-  position: absolute;
-  background-image:
-    linear-gradient(0deg, rgba(255, 255, 255, 0.35) 0, rgba(255, 255, 255, 0) 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0) 1px);
-  background-size: 4px 4px, 6px 6px;
-  mix-blend-mode: soft-light;
+  display: none;
 }
 
 /* --- Hero layout shell --- */
@@ -160,7 +240,7 @@ section[id] {
 
 .hero-copy {
   color: #f5f7fb;
-  max-width: 34.5rem;
+  max-width: 42rem;
 }
 
 .hero-eyebrow {
@@ -173,12 +253,27 @@ section[id] {
 }
 
 .hero-title {
-  font-size: clamp(3rem, 8vw, 5.7rem);
-  font-weight: 800;
-  letter-spacing: -0.07em;
-  line-height: 0.86;
-  margin-bottom: 1.1rem;
-  max-width: 9.5ch;
+  font-size: clamp(3.65rem, 8.5vw, 7.35rem);
+  font-weight: 760;
+  letter-spacing: -0.085em;
+  line-height: 0.82;
+  margin-bottom: 1.35rem;
+  max-width: 10ch;
+}
+
+.hero-title-word {
+  display: block;
+  overflow: hidden;
+  padding-right: 0.1em;
+}
+
+.hero-title-word > span {
+  display: inline-block;
+}
+
+.hero-title-accent {
+  color: #18dca6;
+  font-weight: 880;
 }
 
 .hero-role {
@@ -199,7 +294,7 @@ section[id] {
 }
 
 .hero-role-word {
-  color: #ffffff;
+  color: #18dca6;
   position: relative;
 }
 
@@ -225,7 +320,7 @@ section[id] {
 .hero-button {
   align-items: center;
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: 0.85rem;
   display: inline-flex;
   font-size: 1rem;
   font-weight: 600;
@@ -238,19 +333,18 @@ section[id] {
 
 .hero-button:hover,
 .hero-button:focus-visible {
-  transform: translateY(-2px);
   text-decoration: none;
 }
 
 .hero-button-primary {
-  background: linear-gradient(135deg, #ffffff 0%, #d9f7e3 100%);
-  box-shadow: 0 16px 38px rgba(16, 185, 129, 0.16);
+  background: #18dca6;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.28);
   color: #0c0f14;
 }
 
 .hero-button-primary:hover,
 .hero-button-primary:focus-visible {
-  box-shadow: 0 20px 44px rgba(16, 185, 129, 0.24);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.38);
   color: #0c0f14;
 }
 
@@ -264,6 +358,13 @@ section[id] {
 .hero-button-secondary:focus-visible {
   border-color: rgba(255, 255, 255, 0.28);
   color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-portrait,
+  .hero-role-word::after {
+    animation: none;
+  }
 }
 
 /* --- Hero tech stack pills --- */
@@ -310,7 +411,7 @@ section[id] {
 }
 
 .hero-orb-primary {
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.32), rgba(34, 197, 94, 0));
+  display: none;
   height: 25rem;
   right: 12%;
   top: 12%;
@@ -318,7 +419,7 @@ section[id] {
 }
 
 .hero-orb-secondary {
-  background: radial-gradient(circle, rgba(249, 115, 22, 0.32), rgba(249, 115, 22, 0));
+  display: none;
   bottom: 10%;
   height: 20rem;
   left: 8%;
@@ -357,8 +458,8 @@ section[id] {
 .hero-portrait-frame::after {
   border-radius: inherit;
   box-shadow:
-    0 0 0 1px rgba(34, 197, 94, 0.12),
-    0 0 0 18px rgba(249, 115, 22, 0.04);
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 0 18px rgba(255, 255, 255, 0.018);
   content: '';
   inset: 0;
   pointer-events: none;
@@ -409,7 +510,7 @@ section[id] {
    ========================================================================== */
 
 .page-section {
-  background-color: #101010;
+  background: transparent;
   display: block;
   min-height: auto;
   height: auto;
@@ -417,9 +518,7 @@ section[id] {
   padding: clamp(104px, 11vw, 144px) 0;
   position: relative;
   isolation: isolate;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.02),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.055);
   width: 100%;
   transition: background-color 260ms ease, background-image 260ms ease;
 }
@@ -447,11 +546,11 @@ section[id] {
 #about.page-section,
 #services.page-section,
 #certifications.page-section {
-  background-color: #0e0e0e;
+  background: transparent;
 }
 
 #resume.page-section {
-  background-color: #111111;
+  background: transparent;
 }
 
 /* ==========================================================
@@ -462,12 +561,7 @@ section[id] {
 #tech-stack.page-section,
 #portfolio.page-section,
 #contact.page-section {
-  background:
-    radial-gradient(circle at 18% 18%, rgba(34, 197, 94, 0.18), transparent 30%),
-    radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.035), transparent 26%),
-    radial-gradient(circle at 82% 16%, rgba(16, 185, 129, 0.12), transparent 24%),
-    radial-gradient(circle at 70% 78%, rgba(249, 115, 22, 0.10), transparent 26%),
-    linear-gradient(180deg, #0d1116 0%, #0b0d12 100%);
+  background: transparent;
 }
 
 /* --- Page section / hero responsive breakpoints --- */
@@ -736,7 +830,7 @@ section[id] {
 
     border-radius:999px;
 
-    background:#19f0c1;
+    background:#18dca6;
 
     transition:.25s ease;
 }
@@ -993,6 +1087,10 @@ section[id] {
     .menu-toggle{
         display:flex;
     }
+
+    .navbar.navbar--project-modal-open{
+        display:none;
+    }
 }
 
 @media (min-width:992px){
@@ -1110,7 +1208,7 @@ section[id] {
 
 .project-card-badge {
   align-self: flex-start;
-  background: rgba(24, 220, 166, 0.12);
+  background: rgba(255, 255, 255, 0.045);
   color: #18dca6;
   border: 1px solid rgba(24, 220, 166, 0.25);
   padding: 3px 10px;
@@ -1192,7 +1290,7 @@ section[id] {
 }
 
 .project-card-button:hover {
-  background: rgba(24, 220, 166, 0.15);
+  background: rgba(255, 255, 255, 0.08);
   border-color: rgba(24, 220, 166, 0.35);
   color: #18dca6;
 }
@@ -1402,7 +1500,7 @@ section[id] {
 }
 
 .project-modal-actions .project-card-button:hover {
-  background: rgba(24, 220, 166, 0.15);
+  background: rgba(255, 255, 255, 0.08);
   border-color: rgba(24, 220, 166, 0.35);
   color: #18dca6;
   transform: translateY(-2px);
@@ -1432,10 +1530,10 @@ section[id] {
 
 .project-modal-close:hover,
 .project-modal-close:focus-visible {
-  background: rgba(24, 220, 166, 0.2);
+  background: rgba(255, 255, 255, 0.12);
   border-color: rgba(24, 220, 166, 0.4);
   transform: scale(1.08) rotate(90deg);
-  box-shadow: 0 0 20px rgba(24, 220, 166, 0.2);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
 .project-modal-close svg {
@@ -1644,7 +1742,7 @@ section[id] {
    ========================================================================== */
 
 .footer-area {
-  background: #0b0d10;
+  background: transparent;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
   padding: clamp(40px, 4vw, 52px) 0 clamp(26px, 3vw, 32px);
@@ -1652,10 +1750,7 @@ section[id] {
 }
 
 .footer-area::before {
-  background:
-    radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.06), transparent 28%),
-    radial-gradient(circle at 85% 20%, rgba(249, 115, 22, 0.05), transparent 24%),
-    radial-gradient(circle at 12% 20%, rgba(255, 255, 255, 0.03), transparent 22%);
+  background: none;
   content: '';
   inset: 0;
   pointer-events: none;
@@ -1890,9 +1985,7 @@ section[id] {
 .tech-stack-section::before,
 #portfolio.page-section::before,
 #contact.page-section::before {
-  background:
-    radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.04), transparent 24%),
-    radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.06), transparent 38%);
+  background: none;
   content: '';
   inset: 0;
   pointer-events: none;
@@ -1902,10 +1995,7 @@ section[id] {
 .tech-stack-section::after,
 #portfolio.page-section::after,
 #contact.page-section::after {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 64px 64px;
+  background: none;
   content: '';
   inset: 0;
   opacity: 0.11;
@@ -2042,7 +2132,7 @@ section[id] {
 .contact-field textarea:focus {
   background: rgba(255, 255, 255, 0.045);
   border-color: rgba(0, 200, 140, 0.75);
-  box-shadow: 0 0 0 3px rgba(0, 200, 140, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
 }
 
 .contact-actions {
@@ -2055,10 +2145,10 @@ section[id] {
 .contact-submit-button {
   align-items: center;
   align-self: flex-start;
-  background: linear-gradient(135deg, #18dca6 0%, #12c991 100%);
+  background: #18dca6;
   border: 1px solid rgba(24, 220, 166, 0.3);
   border-radius: 999px;
-  box-shadow: 0 14px 30px rgba(24, 220, 166, 0.12);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
   color: #08110f;
   display: inline-flex;
   font-size: 0.98rem;
@@ -2073,8 +2163,8 @@ section[id] {
 
 .contact-submit-button:hover,
 .contact-submit-button:focus-visible {
-  background: linear-gradient(135deg, #21e3ae 0%, #14d093 100%);
-  box-shadow: 0 18px 34px rgba(24, 220, 166, 0.16);
+  background: #18dca6;
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.36);
   transform: translateY(-2px);
 }
 
@@ -2088,7 +2178,7 @@ section[id] {
 }
 
 .contact-submit-button.is-sending {
-  background: linear-gradient(135deg, #15c791 0%, #12b684 100%);
+  background: #18dca6;
 }
 
 .contact-submit-arrow {
@@ -2179,7 +2269,7 @@ section[id] {
 .contact-social-link:focus-visible {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(24, 220, 166, 0.35);
-  box-shadow: 0 8px 24px rgba(24, 220, 166, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
   color: #fff;
   transform: translateY(-2px);
   text-decoration: none;
@@ -2353,12 +2443,7 @@ section[id] {
   align-items: center;
   justify-content: center;
   border-radius: 14px;
-  background:
-    linear-gradient(
-      135deg,
-      rgba(24, 220, 166, 0.15),
-      rgba(255, 255, 255, 0.04)
-    );
+  background: rgba(255, 255, 255, 0.05);
   color: #18dca6;
   font-size: 22px;
   flex-shrink: 0;
@@ -2367,7 +2452,7 @@ section[id] {
 
 .tech-card:hover .tech-card-icon {
   transform: scale(1.12);
-  box-shadow: 0 0 18px rgba(24, 220, 166, 0.35);
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.28);
 }
 
 .tech-card-title,
@@ -2445,17 +2530,11 @@ section[id] {
    ========================================================================== */
 
 #about.page-section {
-  background:
-    radial-gradient(circle at 18% 18%, rgba(34, 197, 94, 0.14), transparent 24%),
-    radial-gradient(circle at 82% 18%, rgba(99, 102, 241, 0.1), transparent 22%),
-    radial-gradient(circle at 72% 82%, rgba(249, 115, 22, 0.08), transparent 24%),
-    linear-gradient(180deg, #0b0d12 0%, #0f1116 100%);
+  background: transparent;
 }
 
 #about.page-section::before {
-  background:
-    radial-gradient(circle at 50% 14%, rgba(255, 255, 255, 0.05), transparent 26%),
-    radial-gradient(circle at 20% 70%, rgba(34, 197, 94, 0.08), transparent 18%);
+  background: none;
   content: '';
   inset: 0;
   pointer-events: none;
@@ -2463,10 +2542,7 @@ section[id] {
 }
 
 #about.page-section::after {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 72px 72px;
+  background: none;
   content: '';
   inset: 0;
   opacity: 0.08;
@@ -2534,7 +2610,7 @@ section[id] {
 .about-availability {
   align-items: center;
   align-self: flex-start;
-  background: rgba(34, 197, 94, 0.1);
+  background: rgba(255, 255, 255, 0.045);
   border: 1px solid rgba(34, 197, 94, 0.18);
   border-radius: 999px;
   color: #dbfbe5;
@@ -2547,9 +2623,9 @@ section[id] {
 }
 
 .about-status-dot {
-  background: #22c55e;
+  background: #18dca6;
   border-radius: 999px;
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.06);
   height: 0.58rem;
   width: 0.58rem;
 }
@@ -2747,14 +2823,14 @@ section[id] {
 }
 
 .about-button-primary {
-  background: linear-gradient(135deg, #ffffff 0%, #e4f8eb 100%);
-  box-shadow: 0 18px 34px rgba(34, 197, 94, 0.12);
+  background: #18dca6;
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.28);
   color: #0b0d12;
 }
 
 .about-button-primary:hover,
 .about-button-primary:focus-visible {
-  box-shadow: 0 22px 40px rgba(34, 197, 94, 0.18);
+  box-shadow: 0 22px 40px rgba(0, 0, 0, 0.36);
   color: #0b0d12;
 }
 
@@ -2876,7 +2952,7 @@ section[id] {
   height: 180px;
   top: -70px;
   right: -70px;
-  background: #22c55e;
+  background: #fff;
   border-radius: 50%;
   filter: blur(90px);
   opacity: 0;
@@ -2888,7 +2964,7 @@ section[id] {
   border-color: rgba(34,197,94,.35);
   box-shadow:
       0 20px 45px rgba(0,0,0,.35),
-      0 0 25px rgba(34,197,94,.08);
+      0 0 25px rgba(0, 0, 0, .18);
 }
 
 .single-service:hover::before {
@@ -2906,7 +2982,7 @@ section[id] {
   align-items: center;
   justify-content: center;
   border-radius: 20px;
-  background: rgba(34,197,94,.08);
+  background: rgba(255, 255, 255, .04);
   border: 1px solid rgba(34,197,94,.18);
   transition: .35s;
 }
@@ -2918,9 +2994,9 @@ section[id] {
 }
 
 .single-service:hover .service-icon-wrapper {
-  background: #22c55e;
+  background: rgba(255, 255, 255, .1);
   transform: rotate(-8deg) scale(1.06);
-  box-shadow: 0 0 18px rgba(34,197,94,.35);
+  box-shadow: 0 0 18px rgba(0, 0, 0, .3);
 }
 
 .single-service:hover .service-icon {
@@ -2955,7 +3031,7 @@ section[id] {
   height: 3px;
   margin-top: 24px;
   border-radius: 20px;
-  background: #22c55e;
+  background: rgba(255, 255, 255, 0.42);
   transition: .35s;
 }
 
@@ -3013,7 +3089,7 @@ section[id] {
   align-items: center;
   justify-content: center;
   border-radius: 16px;
-  background: linear-gradient(135deg, rgba(24, 220, 166, 0.18), rgba(255, 255, 255, 0.04));
+  background: rgba(255, 255, 255, 0.05);
   color: #18dca6;
   font-size: 26px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -3076,7 +3152,7 @@ section[id] {
 }
 
 .certificate-badge {
-  background: rgba(24, 220, 166, 0.12);
+  background: rgba(255, 255, 255, 0.045);
   color: #18dca6;
   border: 1px solid rgba(24, 220, 166, 0.25);
   padding: 3px 8px;
@@ -3101,7 +3177,7 @@ section[id] {
 }
 
 .certificate-btn:hover {
-  background: rgba(24, 220, 166, 0.15);
+  background: rgba(255, 255, 255, 0.08);
   border-color: rgba(24, 220, 166, 0.35);
   color: #18dca6;
   transform: translateY(-2px);
@@ -3186,7 +3262,7 @@ section[id] {
     padding: 6px 12px;
     min-height: 34px;
     border-radius: 10px;
-    background: rgba(24, 220, 166, 0.08);
+    background: rgba(255, 255, 255, 0.045);
     color: #18dca6;
     border: 1px solid rgba(24, 220, 166, 0.22);
     letter-spacing: 0.01em;

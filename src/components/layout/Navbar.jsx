@@ -1,7 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
 import logo from "../../assets/logo/logo.png";
 
-function Navbar({ navigationItems, isMenuOpen, onToggleMenu, onCloseMenu }) {
+function Navbar({
+  navigationItems,
+  isMenuOpen,
+  isProjectModalOpen,
+  onToggleMenu,
+  onCloseMenu,
+}) {
   const [scrolled, setScrolled] = useState(false);
 
   /* ============================
@@ -66,7 +72,10 @@ function Navbar({ navigationItems, isMenuOpen, onToggleMenu, onCloseMenu }) {
                   NAVBAR
       ========================================== */}
 
-      <header className={`navbar ${scrolled ? "scrolled" : ""}`} role="banner">
+      <header
+        className={`navbar ${scrolled ? "scrolled" : ""}${isProjectModalOpen ? " navbar--project-modal-open" : ""}`}
+        role="banner"
+      >
         {/* ================= Logo ================= */}
 
         <a href="#home" className="navbar-logo" onClick={handleLinkClick}>
