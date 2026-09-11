@@ -48,6 +48,9 @@ import {
 } from "../../data/techStack";
 import TechCard from "../cards/TechCard";
 
+const ALL_FILTER = { id: "all", label: "All" };
+const ALL_TECH_LIMIT = 9;
+
 const techIconMap = {
   react: FaReact,
   nextjs: SiNextdotjs,
@@ -91,8 +94,9 @@ const techIconMap = {
 function TechStackSection() {
   const sectionRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("frontend");
-  const [displayFilter, setDisplayFilter] = useState("frontend");
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [displayFilter, setDisplayFilter] = useState("all");
+  const [isAllExpanded, setIsAllExpanded] = useState(false);
   const [transitionPhase, setTransitionPhase] = useState("idle");
   const transitionTimerRef = useRef(null);
 
@@ -124,10 +128,12 @@ function TechStackSection() {
   );
 
   const filterCounts = useMemo(() => {
-    const counts = techStackFilters.reduce((accumulator, filter) => {
+    const counts = [...techStackFilters, ALL_FILTER].reduce((accumulator, filter) => {
       accumulator[filter.id] = 0;
       return accumulator;
     }, {});
+
+    counts.all = techStackSkills.length;
 
     techStackSkills.forEach((skill) => {
       skill.categories.forEach((category) => {
@@ -141,10 +147,20 @@ function TechStackSection() {
   }, []);
 
   const visibleSkills = useMemo(() => {
-    return techStackSkills.filter((skill) =>
-      skill.categories.includes(displayFilter),
-    );
+    if (displayFilter === ALL_FILTER.id) {
+      return techStackSkills;
+    }
+
+    return techStackSkills.filter((skill) => skill.categories.includes(displayFilter));
   }, [displayFilter]);
+
+  const renderedSkills = useMemo(
+    () =>
+      displayFilter === ALL_FILTER.id && !isAllExpanded
+        ? visibleSkills.slice(0, ALL_TECH_LIMIT)
+        : visibleSkills,
+    [displayFilter, isAllExpanded, visibleSkills],
+  );
 
   const handleFilterChange = (nextFilter) => {
     if (nextFilter === activeFilter) {
@@ -156,6 +172,7 @@ function TechStackSection() {
     }
 
     setActiveFilter(nextFilter);
+    setIsAllExpanded(false);
     setTransitionPhase("leaving");
 
     transitionTimerRef.current = window.setTimeout(() => {
@@ -192,7 +209,7 @@ function TechStackSection() {
                 aria-label="Tech stack filters"
                 role="tablist"
               >
-                {techStackFilters.map((filter) => {
+                {[ALL_FILTER, ...techStackFilters].map((filter) => {
                   const isActive = activeFilter === filter.id;
 
                   return (
@@ -214,28 +231,45 @@ function TechStackSection() {
                 })}
               </div>
 
-              <div
-                className={`tech-grid tech-grid--filtered${transitionPhase !== "idle" ? ` is-${transitionPhase}` : ""}`}
-              >
-                {visibleSkills.map((skill, skillIndex) => {
-                  const icon = techIconMap[skill.iconKey];
-                  const activeCategoryTitle =
-                    techStackFilters.find(
-                      (filter) => filter.id === displayFilter,
-                    )?.label ?? "Tech Stack";
+              <div className="tech-stack-results">
+                <div
+                  className={`tech-grid tech-grid--filtered${transitionPhase !== "idle" ? ` is-${transitionPhase}` : ""}`}
+                >
+                  {renderedSkills.map((skill, skillIndex) => {
+                    const icon = techIconMap[skill.iconKey];
+                    const activeCategoryTitle =
+                      displayFilter === ALL_FILTER.id
+                        ? "All Technologies"
+                        : techStackFilters.find(
+                            (filter) => filter.id === displayFilter,
+                          )?.label ?? "Tech Stack";
 
-                  return (
-                    <TechCard
-                      key={skill.name}
-                      icon={icon}
-                      name={skill.name}
-                      categoryTitle={activeCategoryTitle}
-                      animationState={transitionPhase}
-                      isVisible={isVisible}
-                      delay={skillIndex * 12}
-                    />
-                  );
-                })}
+                    return (
+                      <TechCard
+                        key={skill.name}
+                        icon={icon}
+                        name={skill.name}
+                        categoryTitle={activeCategoryTitle}
+                        animationState={transitionPhase}
+                        isVisible={isVisible}
+                        delay={skillIndex * 12}
+                      />
+                    );
+                  })}
+                </div>
+
+                {displayFilter === ALL_FILTER.id && visibleSkills.length > ALL_TECH_LIMIT ? (
+                  <div className="tech-stack-toggle">
+                    <button
+                      type="button"
+                      className="filter-tab"
+                      aria-expanded={isAllExpanded}
+                      onClick={() => setIsAllExpanded((expanded) => !expanded)}
+                    >
+                      {isAllExpanded ? "View Less" : "View More"}
+                    </button>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>

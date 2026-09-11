@@ -2386,6 +2386,17 @@ section[id] {
   margin-top: clamp(4px, 1vw, 10px);
 }
 
+.tech-stack-results {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.tech-stack-toggle {
+  display: flex;
+  justify-content: center;
+}
+
 .tech-stack-section.is-visible .tech-card.is-idle {
   opacity: 1;
   transform: translateY(0) scale(1);
