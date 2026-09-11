@@ -1275,6 +1275,15 @@ section[id] {
   cursor: pointer;
 }
 
+.project-card .project-card-button {
+  transition: transform 280ms cubic-bezier(0.25, 0.1, 0.25, 1), background-color 220ms ease, border-color 220ms ease, color 220ms ease;
+}
+
+.project-card:hover .project-card-button,
+.project-card:focus-within .project-card-button {
+  transform: translateY(-2px);
+}
+
 .project-card-button:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(24, 220, 166, 0.35);
@@ -2090,6 +2099,7 @@ section[id] {
   outline: none;
   transition: border-color 250ms ease, box-shadow 250ms ease, background 250ms ease;
   width: 100%;
+  transition: border-color 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
 }
 
 .contact-field input {
@@ -2519,6 +2529,27 @@ section[id] {
   .tech-filter-pill,
   .tech-card {
     transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card,
+  .project-card-image,
+  .project-card .project-card-button,
+  .certification-card,
+  .footer-nav-link,
+  .contact-social-link,
+  .contact-field input,
+  .contact-field textarea {
+    transition: none !important;
+  }
+
+  .project-card:hover,
+  .certification-card:hover,
+  .project-card:hover .project-card-image,
+  .project-card:hover .project-card-button,
+  .project-card:focus-within .project-card-button {
+    transform: none;
   }
 }
 

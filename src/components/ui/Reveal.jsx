@@ -9,6 +9,7 @@ export function Reveal({
   cascade = false,
   className = "",
   style = {},
+  ...props
 }) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -37,6 +38,7 @@ export function Reveal({
         viewport={{ once: true, amount: 0.2 }}
         className={className}
         style={{ width, ...style }}
+        {...props}
       >
         {children}
       </motion.div>
@@ -52,6 +54,7 @@ export function Reveal({
       transition={{ duration, delay, ease: [0.25, 0.1, 0.25, 1] }}
       className={className}
       style={{ width, ...style }}
+      {...props}
     >
       {children}
     </motion.div>

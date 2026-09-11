@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { contactFormInitialState, contactIntro, contactSocialLinks } from '../../data/contact'
+import { Reveal, RevealChild } from '../ui/Reveal'
 
 function ContactSection() {
+  const shouldReduceMotion = useReducedMotion()
   const [formData, setFormData] = useState(contactFormInitialState)
   const [submitState, setSubmitState] = useState('idle')
   const [feedbackMessage, setFeedbackMessage] = useState('')
@@ -76,15 +79,15 @@ function ContactSection() {
     <section className="page-section contact-section" id="contact" aria-labelledby="contact-title">
       <div className="container">
         <div className="contact-shell">
-          <header className="contact-header">
+          <Reveal><header className="contact-header">
             <p className="contact-eyebrow">{contactIntro.eyebrow}</p>
             <h2 className="contact-title" id="contact-title">
               {contactIntro.title}
             </h2>
             <p className="contact-description">{contactIntro.description}</p>
-          </header>
+          </header></Reveal>
 
-          <div className="contact-form-wrap">
+          <Reveal delay={0.1}><div className="contact-form-wrap">
             <div className="contact-form-heading">
               <h3>Message Me</h3>
             </div>
@@ -165,9 +168,9 @@ function ContactSection() {
                 </p>
               </div>
             </form>
-          </div>
+          </div></Reveal>
 
-          <div className="contact-social">
+          <Reveal delay={0.15}><div className="contact-social">
             <p className="contact-social-kicker">FIND ME ONLINE</p>
             <ul className="contact-social-links" aria-label="Social links">
               {contactSocialLinks.map((link) => {
@@ -176,21 +179,23 @@ function ContactSection() {
 
                 return (
                   <li key={link.label}>
-                    <a
+                    <motion.a
                       className="contact-social-link"
                       href={link.href}
                       target={isExternal ? '_blank' : undefined}
                       rel={isExternal ? 'noopener noreferrer' : undefined}
+                      whileHover={shouldReduceMotion ? undefined : { y: -3, scale: 1.02 }}
+                      whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
                     >
                       <SocialIcon aria-hidden="true" />
                       <span>{link.label}</span>
                       <span aria-hidden="true">{'\u2197'}</span>
-                    </a>
+                    </motion.a>
                   </li>
                 )
               })}
             </ul>
-          </div>
+          </div></Reveal>
         </div>
       </div>
     </section>

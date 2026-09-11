@@ -145,7 +145,7 @@ function ProjectsSection({ filters, projects, onModalOpenChange }) {
               {/* Section Header */}
               <div className="row">
                 <div className="col-12">
-                  <SectionHeading title="Portfolio" subtitle="Showcasing some of my best work" className="page-heading" />
+                  <SectionHeading title="Portfolio" subtitle="Showcasing some of my best work" className="page-heading" headingId="projects-title" />
                 </div>
               </div>
 

@@ -200,7 +200,7 @@ function TechStackSection() {
         <div className="row">
           <div className="col-12">
             <div className="lightbox-content tech-stack-content">
-              <SectionHeading title={techStackIntro.title} subtitle={techStackIntro.subtitle} className="page-heading tech-stack-heading" />
+              <SectionHeading title={techStackIntro.title} subtitle={techStackIntro.subtitle} className="page-heading tech-stack-heading" headingId="tech-stack-title" />
 
               <Reveal
                 className="filter-tabs"

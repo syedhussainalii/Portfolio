@@ -1,6 +1,6 @@
 import { Reveal } from "./Reveal";
 
-export function SectionHeading({ title, subtitle, className = "" }) {
+export function SectionHeading({ title, subtitle, className = "", headingId }) {
   return (
     <div className={`section-header text-center ${className}`}>
       {subtitle && (
@@ -9,7 +9,7 @@ export function SectionHeading({ title, subtitle, className = "" }) {
         </Reveal>
       )}
       <Reveal y={20} delay={0}>
-        <h2 className="section-title">{title}</h2>
+        <h2 className="section-title" id={headingId}>{title}</h2>
       </Reveal>
     </div>
   );

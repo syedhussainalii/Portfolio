@@ -37,7 +37,7 @@ function CertificationsSection() {
           <div className="col-12">
             <div className="lightbox-content">
               {/* Heading */}
-              <SectionHeading title={certificationIntro.title} subtitle={certificationIntro.subtitle} className="page-heading" />
+              <SectionHeading title={certificationIntro.title} subtitle={certificationIntro.subtitle} className="page-heading" headingId="certifications-title" />
 
               {/* Filter */}
               {/* Filter */}
