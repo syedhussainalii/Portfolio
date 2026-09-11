@@ -7,7 +7,6 @@ import {
   aboutStats,
 } from '../../data/about'
 import { Reveal, RevealChild } from '../ui/Reveal'
-import { SectionHeading } from '../ui/SectionHeading'
 import { CountUp } from '../ui/CountUp'
 
 function AboutSection() {

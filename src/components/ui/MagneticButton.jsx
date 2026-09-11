@@ -1,13 +1,14 @@
-import { motion, useMotionValue, useSpring } from 'framer-motion'
+import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion'
 
 function MagneticButton({ children, className, ...props }) {
+  const shouldReduceMotion = useReducedMotion()
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const springX = useSpring(x, { stiffness: 260, damping: 18, mass: 0.25 })
   const springY = useSpring(y, { stiffness: 260, damping: 18, mass: 0.25 })
 
   const handlePointerMove = (event) => {
-    if (event.pointerType === 'touch') return
+    if (shouldReduceMotion || event.pointerType === 'touch') return
 
     const bounds = event.currentTarget.getBoundingClientRect()
     x.set(((event.clientX - bounds.left) / bounds.width - 0.5) * 10)
@@ -23,7 +24,7 @@ function MagneticButton({ children, className, ...props }) {
     <motion.a
       {...props}
       className={className}
-      style={{ x: springX, y: springY }}
+      style={shouldReduceMotion ? undefined : { x: springX, y: springY }}
       onPointerMove={handlePointerMove}
       onPointerLeave={resetPosition}
       onBlur={resetPosition}

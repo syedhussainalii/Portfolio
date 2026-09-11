@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import logo from "../../assets/logo/logo.png";
 
 function Navbar({
@@ -9,6 +9,7 @@ function Navbar({
   onToggleMenu,
   onCloseMenu,
 }) {
+  const shouldReduceMotion = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [hoveredSection, setHoveredSection] = useState(null);
@@ -127,8 +128,8 @@ function Navbar({
             }
             handleLinkClick();
           }}
-          whileHover={{ scale: 1.05, rotate: -2 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={shouldReduceMotion ? undefined : { scale: 1.05, rotate: -2 }}
+          whileTap={shouldReduceMotion ? undefined : { scale: 0.95 }}
         >
           <img src={logo} alt="Hussain Logo" />
         </motion.a>
@@ -192,6 +193,7 @@ function Navbar({
           className={`menu-toggle ${isMenuOpen ? "active" : ""}`}
           aria-label="Toggle Navigation"
           aria-expanded={isMenuOpen}
+          aria-controls="mobile-navigation"
           onClick={onToggleMenu}
         >
           <span />
@@ -213,7 +215,11 @@ function Navbar({
                 MOBILE DRAWER
       ========================================== */}
 
-      <aside className={`mobile-drawer ${isMenuOpen ? "open" : ""}`}>
+      <aside
+        id="mobile-navigation"
+        className={`mobile-drawer ${isMenuOpen ? "open" : ""}`}
+        aria-hidden={!isMenuOpen}
+      >
         <nav className="drawer-nav">
           {navigationItems.map((item) => (
             <a

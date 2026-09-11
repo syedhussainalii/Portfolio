@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
+import { useReducedMotion } from 'framer-motion'
 import { heroProfile } from '../../data/hero'
 
 function HeroImage() {
+  const shouldReduceMotion = useReducedMotion()
   const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0, translateX: 0, translateY: 0 })
 
   const portraitStyle = useMemo(
@@ -12,6 +14,8 @@ function HeroImage() {
   )
 
   const handlePointerMove = (event) => {
+    if (shouldReduceMotion || event.pointerType !== 'mouse') return
+
     const element = event.currentTarget
     const bounds = element.getBoundingClientRect()
     const normalizedX = (event.clientX - bounds.left) / bounds.width - 0.5

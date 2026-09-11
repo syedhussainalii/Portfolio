@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { contactFormInitialState, contactIntro, contactSocialLinks } from '../../data/contact'
-import { Reveal, RevealChild } from '../ui/Reveal'
+import { Reveal } from '../ui/Reveal'
 
 function ContactSection() {
   const shouldReduceMotion = useReducedMotion()
