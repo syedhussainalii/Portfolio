@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import ProjectCard from '../cards/ProjectCard'
+import { Reveal, RevealChild } from '../ui/Reveal'
+import { SectionHeading } from '../ui/SectionHeading'
 
 function ProjectsSection({ filters, projects, onModalOpenChange }) {
+  const shouldReduceMotion = useReducedMotion()
   const sectionRef = useRef(null)
   const lastActiveElementRef = useRef(null)
   const modalCloseButtonRef = useRef(null)
@@ -141,13 +145,7 @@ function ProjectsSection({ filters, projects, onModalOpenChange }) {
               {/* Section Header */}
               <div className="row">
                 <div className="col-12">
-                  <div className="section-heading page-heading">
-                    <p className="section-description">Showcasing some of my best work</p>
-                    <h2 className="section-title" id="projects-title">
-                      Portfolio
-                    </h2>
-                    <div className="animated-bar" />
-                  </div>
+                  <SectionHeading title="Portfolio" subtitle="Showcasing some of my best work" className="page-heading" />
                 </div>
               </div>
 
@@ -155,10 +153,12 @@ function ProjectsSection({ filters, projects, onModalOpenChange }) {
               <div className="portfolio-section single-section">
                 <div className="row">
                   <div className="col-12">
-                    <div
+                    <Reveal
                       className="filter-tabs"
                       role="tablist"
                       aria-label="Portfolio filters"
+                      cascade
+                      style={{ width: 'auto' }}
                     >
                       {filters.map((filter) => {
                         const total = projects.filter(
@@ -168,27 +168,31 @@ function ProjectsSection({ filters, projects, onModalOpenChange }) {
                         const isActive = activeFilter === filter.value
 
                         return (
-                          <button
-                            key={filter.value}
+                          <RevealChild key={filter.value} y={12}>
+                          <motion.button
                             type="button"
                             role="tab"
                             aria-selected={isActive}
                             aria-pressed={isActive}
                             className={`filter-tab${isActive ? ' active' : ''}`}
                             onClick={() => handleFilterChange(filter.value)}
+                            whileHover={shouldReduceMotion ? undefined : { y: -2 }}
+                            whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
                           >
                             {filter.label}
                             <span className="filter-tab-badge">{total}</span>
-                          </button>
+                          </motion.button>
+                          </RevealChild>
                         )
                       })}
-                    </div>
+                    </Reveal>
                   </div>
                 </div>
 
                 {/* Animated Grid Container */}
-                <div className="portfolio-grid-container">
+                <motion.div className="portfolio-grid-container" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={{ hidden: {}, visible: { transition: { staggerChildren: shouldReduceMotion ? 0 : 0.1 } } }}>
                   {visibleProjects.map((project, index) => (
+                    <motion.div key={`${displayFilter}-${project.id}`} variants={{ hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] } } }}>
                     <ProjectCard
                       key={project.id}
                       title={project.title}
@@ -202,8 +206,9 @@ function ProjectsSection({ filters, projects, onModalOpenChange }) {
                       animationState={transitionPhase}
                       delay={index * 25}
                     />
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </div>
             </div>
           </div>

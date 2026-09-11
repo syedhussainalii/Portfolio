@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 
 const ProjectCard = memo(({
   title,
@@ -8,21 +9,14 @@ const ProjectCard = memo(({
   description,
   technologies,
   onOpen,
-  isVisible,
-  animationState = 'idle',
-  delay = 0,
 }) => {
-  const stateClass =
-    animationState === 'entering'
-      ? ' is-entering'
-      : animationState === 'leaving'
-        ? ' is-leaving'
-        : ' is-idle'
+  const shouldReduceMotion = useReducedMotion()
 
   return (
-    <article
-      className={`project-card${isVisible ? ' is-visible' : ''}${stateClass}`}
-      style={{ '--project-delay': `${delay}ms` }}
+    <motion.article
+      className="project-card"
+      whileHover={shouldReduceMotion ? undefined : { y: -6 }}
+      transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <div className="project-card-image-wrapper">
         <img className="project-card-image" alt={alt} src={thumbnail} />
@@ -50,7 +44,7 @@ const ProjectCard = memo(({
           View Details
         </button>
       </div>
-    </article>
+    </motion.article>
   )
 })
 

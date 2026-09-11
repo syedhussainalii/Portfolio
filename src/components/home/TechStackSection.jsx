@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   FaGithub,
   FaGoogle,
@@ -47,6 +48,8 @@ import {
   techStackSkills,
 } from "../../data/techStack";
 import TechCard from "../cards/TechCard";
+import { Reveal, RevealChild } from "../ui/Reveal";
+import { SectionHeading } from "../ui/SectionHeading";
 
 const ALL_FILTER = { id: "all", label: "All" };
 const ALL_TECH_LIMIT = 9;
@@ -92,6 +95,7 @@ const techIconMap = {
 };
 
 function TechStackSection() {
+  const shouldReduceMotion = useReducedMotion();
   const sectionRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
@@ -196,40 +200,39 @@ function TechStackSection() {
         <div className="row">
           <div className="col-12">
             <div className="lightbox-content tech-stack-content">
-              <div className="section-heading page-heading tech-stack-heading">
-                <p className="section-description">{techStackIntro.subtitle}</p>
-                <h2 className="section-title" id="tech-stack-title">
-                  {techStackIntro.title}
-                </h2>
-                <div className="animated-bar" />
-              </div>
+              <SectionHeading title={techStackIntro.title} subtitle={techStackIntro.subtitle} className="page-heading tech-stack-heading" />
 
-              <div
+              <Reveal
                 className="filter-tabs"
                 aria-label="Tech stack filters"
                 role="tablist"
+                cascade
+                style={{ width: "auto" }}
               >
                 {[ALL_FILTER, ...techStackFilters].map((filter) => {
                   const isActive = activeFilter === filter.id;
 
                   return (
-                    <button
-                      key={filter.id}
+                    <RevealChild key={filter.id} y={12}>
+                    <motion.button
                       type="button"
                       role="tab"
                       aria-selected={isActive}
                       aria-pressed={isActive}
                       className={`filter-tab${isActive ? " active" : ""}`}
                       onClick={() => handleFilterChange(filter.id)}
+                      whileHover={shouldReduceMotion ? undefined : { y: -2 }}
+                      whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
                     >
                       {filter.label}
                       <span className="filter-tab-badge">
                         {filterCounts[filter.id]}
                       </span>
-                    </button>
+                    </motion.button>
+                    </RevealChild>
                   );
                 })}
-              </div>
+              </Reveal>
 
               <div className="tech-stack-results">
                 <div

@@ -1,4 +1,6 @@
 import ServiceCard from '../cards/ServiceCard'
+import { Reveal, RevealChild } from '../ui/Reveal'
+import { SectionHeading } from '../ui/SectionHeading'
 
 function ServicesSection({ services }) {
   return (
@@ -7,30 +9,20 @@ function ServicesSection({ services }) {
         <div className="row">
           <div className="col-12">
             <div className="lightbox-content">
-
               <div className="row">
                 <div className="col-12">
-                  <div className="section-heading page-heading">
-                    <p className="section-description">
-                      Services I offer to my clients
-                    </p>
-
-                    <h2
-                      className="section-title"
-                      id="services-title"
-                    >
-                      My Services
-                    </h2>
-
-                    <div className="animated-bar" />
-                  </div>
+                  <SectionHeading 
+                    title="My Services"
+                    subtitle="Services I offer to my clients"
+                    className="page-heading"
+                  />
                 </div>
               </div>
 
               <div className="services-section single-section">
-                <div className="row">
+                <Reveal cascade className="row">
                   {services.map((service) => (
-                    <div
+                    <RevealChild
                       key={service.title}
                       className="col-12 col-md-6 col-lg-4"
                     >
@@ -39,11 +31,10 @@ function ServicesSection({ services }) {
                         title={service.title}
                         description={service.description}
                       />
-                    </div>
+                    </RevealChild>
                   ))}
-                </div>
+                </Reveal>
               </div>
-
             </div>
           </div>
         </div>

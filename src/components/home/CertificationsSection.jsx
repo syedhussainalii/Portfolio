@@ -1,11 +1,15 @@
 import { useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { TbCertificate } from "react-icons/tb";
 import {
   certificationIntro,
   certificationItems,
 } from "../../data/certifications";
+import { Reveal, RevealChild } from "../ui/Reveal";
+import { SectionHeading } from "../ui/SectionHeading";
 
 function CertificationsSection() {
+  const shouldReduceMotion = useReducedMotion();
   const [activeFilter, setActiveFilter] = useState("Meta");
 
   const filters = [
@@ -33,25 +37,16 @@ function CertificationsSection() {
           <div className="col-12">
             <div className="lightbox-content">
               {/* Heading */}
-              <div className="section-heading page-heading">
-                <p className="section-description">
-                  {certificationIntro.subtitle}
-                </p>
-
-                <h2 className="section-title" id="certifications-title">
-                  {certificationIntro.title}
-                </h2>
-
-                <div className="animated-bar" />
-              </div>
+              <SectionHeading title={certificationIntro.title} subtitle={certificationIntro.subtitle} className="page-heading" />
 
               {/* Filter */}
               {/* Filter */}
-              <div
+              <Reveal
                 className="filter-tabs"
                 style={{ marginBottom: "55px" }}
                 role="tablist"
                 aria-label="Certificate filters"
+                cascade
               >
                 {filters.map((filter) => {
                   const total = certificationItems.filter(
@@ -59,8 +54,8 @@ function CertificationsSection() {
                   ).length;
 
                   return (
-                    <button
-                      key={filter.value}
+                    <RevealChild key={filter.value} y={12}>
+                    <motion.button
                       type="button"
                       role="tab"
                       aria-selected={activeFilter === filter.value}
@@ -69,24 +64,27 @@ function CertificationsSection() {
                         activeFilter === filter.value ? "active" : ""
                       }`}
                       onClick={() => setActiveFilter(filter.value)}
+                      whileHover={shouldReduceMotion ? undefined : { y: -2 }}
+                      whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
                     >
                       {filter.label}
 
                       <span className="filter-tab-badge">{total}</span>
-                    </button>
+                    </motion.button>
+                    </RevealChild>
                   );
                 })}
-              </div>
+              </Reveal>
 
               {/* Cards */}
               <div className="certifications-section single-section">
-                <div className="row">
+                <Reveal cascade className="row">
                   {filteredCertificates.map((item) => (
-                    <div
+                    <RevealChild
                       key={item.title}
                       className="col-12 col-md-6 col-xl-4 certification-card-col"
                     >
-                      <article className="certification-card">
+                      <motion.article className="certification-card" whileHover={shouldReduceMotion ? undefined : { y: -6 }} transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}>
                         {/* Header */}
                         <div className="certification-header">
                           <div className="certification-card-icon">
@@ -130,10 +128,10 @@ function CertificationsSection() {
                             View Certificate →
                           </a>
                         </div>
-                      </article>
-                    </div>
+                      </motion.article>
+                    </RevealChild>
                   ))}
-                </div>
+                </Reveal>
               </div>
             </div>
           </div>
