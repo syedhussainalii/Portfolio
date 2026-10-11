@@ -9,7 +9,7 @@ function ContactSection() {
   const [submitState, setSubmitState] = useState('idle')
   const [feedbackMessage, setFeedbackMessage] = useState('')
 
-  const web3FormsAccessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY?.trim() ?? ''
+  const web3FormsAccessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY?.trim() ?? '' 
 
   const handleChange = (event) => {
     const { name, value } = event.target

@@ -6,6 +6,7 @@ import mercedesImg from "../assets/websites/Mercedes_LandingPage.png";
 import travelFranceImg from "../assets/websites/Travel_LandingPage_France.png";
 import travelLPImg from "../assets/websites/Travel_LandingPage.png";
 import travelAgencyImg from "../assets/websites/Travel_Cover.png";
+import obsidianCoverImg from "../assets/websites/Obsidian_Cover.png";
 
 import analyticsDashImg from "../assets/dashboards/Analytics_Dashboard.png";
 import dashSphereImg from "../assets/dashboards/Dashboard_Cover.png";
@@ -217,6 +218,41 @@ export const projects = [
   // ==========================================================================
   // WEB APPS
   // ==========================================================================
+  {
+    id: "obsidian-acoustics-website",
+    title: "Obsidian Acoustics — Premium Audio Website",
+    category: "webapp",
+    categoryLabel: "WEBAPP",
+    thumbnail: obsidianCoverImg,
+    images: [obsidianCoverImg],
+    shortDescription:
+      "A cinematic, monochrome e-commerce landing experience for a premium headphone brand, featuring scroll-driven animations, a slide-over cart and an interactive ANC simulator.",
+    description:
+      "A premium headphone brand website designed and built from scratch. It combines a strict #050505 monochrome design system with cinematic scroll reveals, parallax effects and custom clip-path animations, backed by a custom Express API for newsletter signups and review submissions.",
+    technologies: [
+      "React",
+      "Tailwind CSS",
+      "Framer Motion",
+      "Vite",
+      "React Router",
+      "Context API",
+      "Express.js",
+    ],
+    role: "UI/UX Designer & Full-Stack Developer",
+    features: [
+      "Cinematic scroll reveals, parallax and clip-path animations with Framer Motion",
+      "Slide-over shopping cart with global state management",
+      "Interactive Active Noise Cancellation (ANC) simulator",
+      "Multi-page SPA (Home, Specs, Reviews) with client-side routing",
+      "Newsletter signup and review form powered by a custom Express.js backend",
+      "Fully responsive layouts built on a strict monochrome design system",
+    ],
+    github: "https://github.com/syedhussainalii/obsidian-audio",
+    live: "https://obsidian-audio.vercel.app/",
+    liveUrl: "https://obsidian-audio.vercel.app/",
+    figma: "",
+    featured: true,
+  },
   {
     id: "hoobank-website",
     title: "HooBank Website",

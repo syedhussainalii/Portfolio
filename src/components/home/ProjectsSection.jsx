@@ -157,8 +157,8 @@ function ProjectsSection({ filters, projects, onModalOpenChange }) {
                       title={project.title}
                       thumbnail={project.thumbnail}
                       alt={project.title}
-                      category={project.category}
-                      description={project.description}
+                      category={project.categoryLabel ?? project.category}
+                      description={project.shortDescription ?? project.description}
                       technologies={project.technologies}
                       project={project}
                       onOpen={handleOpenProject}
@@ -221,7 +221,9 @@ function ProjectsSection({ filters, projects, onModalOpenChange }) {
                 />
               </div>
               <div className="project-modal-header-stable">
-                <span className="project-card-badge">{selectedProject.category}</span>
+                <span className="project-card-badge">
+                  {selectedProject.categoryLabel ?? selectedProject.category}
+                </span>
                 <h3 className="project-modal-title">{selectedProject.title}</h3>
               </div>
             </div>
@@ -288,7 +290,7 @@ function ProjectsSection({ filters, projects, onModalOpenChange }) {
                   <a
                     href={selectedProject.github}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="project-card-button"
                   >
                     GitHub
