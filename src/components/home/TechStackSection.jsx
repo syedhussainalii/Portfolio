@@ -99,10 +99,8 @@ function TechStackSection() {
   const sectionRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
-  const [displayFilter, setDisplayFilter] = useState("all");
+  const displayFilter = activeFilter;
   const [isAllExpanded, setIsAllExpanded] = useState(false);
-  const [transitionPhase, setTransitionPhase] = useState("idle");
-  const transitionTimerRef = useRef(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -121,15 +119,6 @@ function TechStackSection() {
 
     return () => observer.disconnect();
   }, []);
-
-  useEffect(
-    () => () => {
-      if (transitionTimerRef.current) {
-        window.clearTimeout(transitionTimerRef.current);
-      }
-    },
-    [],
-  );
 
   const filterCounts = useMemo(() => {
     const counts = [...techStackFilters, ALL_FILTER].reduce((accumulator, filter) => {
@@ -167,26 +156,8 @@ function TechStackSection() {
   );
 
   const handleFilterChange = (nextFilter) => {
-    if (nextFilter === activeFilter) {
-      return;
-    }
-
-    if (transitionTimerRef.current) {
-      window.clearTimeout(transitionTimerRef.current);
-    }
-
     setActiveFilter(nextFilter);
     setIsAllExpanded(false);
-    setTransitionPhase("leaving");
-
-    transitionTimerRef.current = window.setTimeout(() => {
-      setDisplayFilter(nextFilter);
-      setTransitionPhase("entering");
-
-      window.requestAnimationFrame(() => {
-        setTransitionPhase("idle");
-      });
-    }, 300);
   };
 
   return (
@@ -236,7 +207,7 @@ function TechStackSection() {
 
               <div className="tech-stack-results">
                 <div
-                  className={`tech-grid tech-grid--filtered${transitionPhase !== "idle" ? ` is-${transitionPhase}` : ""}`}
+                  className="tech-grid tech-grid--filtered"
                 >
                   {renderedSkills.map((skill, skillIndex) => {
                     const icon = techIconMap[skill.iconKey];
@@ -253,7 +224,6 @@ function TechStackSection() {
                         icon={icon}
                         name={skill.name}
                         categoryTitle={activeCategoryTitle}
-                        animationState={transitionPhase}
                         isVisible={isVisible}
                         delay={skillIndex * 12}
                       />

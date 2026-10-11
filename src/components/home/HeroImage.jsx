@@ -1,10 +1,18 @@
-import { useMemo, useState } from 'react'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import { heroProfile } from '../../data/hero'
 
 function HeroImage() {
   const shouldReduceMotion = useReducedMotion()
   const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0, translateX: 0, translateY: 0 })
+  const pendingTiltRef = useRef(null)
+  const frameRef = useRef(null)
+
+  useEffect(() => () => {
+    if (frameRef.current !== null) {
+      window.cancelAnimationFrame(frameRef.current)
+    }
+  }, [])
 
   const portraitStyle = useMemo(
     () => ({
@@ -21,15 +29,27 @@ function HeroImage() {
     const normalizedX = (event.clientX - bounds.left) / bounds.width - 0.5
     const normalizedY = (event.clientY - bounds.top) / bounds.height - 0.5
 
-    setTilt({
+    pendingTiltRef.current = {
       rotateX: -(normalizedY * 8),
       rotateY: normalizedX * 10,
       translateX: normalizedX * 6,
       translateY: normalizedY * 6,
-    })
+    }
+
+    if (frameRef.current === null) {
+      frameRef.current = window.requestAnimationFrame(() => {
+        setTilt(pendingTiltRef.current)
+        frameRef.current = null
+      })
+    }
   }
 
   const resetTilt = () => {
+    if (frameRef.current !== null) {
+      window.cancelAnimationFrame(frameRef.current)
+      frameRef.current = null
+    }
+    pendingTiltRef.current = null
     setTilt({ rotateX: 0, rotateY: 0, translateX: 0, translateY: 0 })
   }
 
@@ -54,4 +74,4 @@ function HeroImage() {
   )
 }
 
-export default HeroImage
+export default memo(HeroImage)

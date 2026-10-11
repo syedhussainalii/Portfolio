@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import './App.css'
 import AboutSection from './components/home/AboutSection'
 import CertificationsSection from './components/home/CertificationsSection'
@@ -24,19 +24,17 @@ function App() {
   const [isLoading, setIsLoading] = useState(true)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false)
-  const [activeWordIndex, setActiveWordIndex] = useState(0)
 
   useEffect(() => {
     const loadingTimer = window.setTimeout(() => setIsLoading(false), 900)
     return () => window.clearTimeout(loadingTimer)
   }, [])
 
-  useEffect(() => {
-    const wordTimer = window.setInterval(() => {
-      setActiveWordIndex((currentIndex) => (currentIndex + 1) % heroWords.length)
-    }, 2200)
-
-    return () => window.clearInterval(wordTimer)
+  const handleModalOpenChange = useCallback((isOpen) => {
+    setIsProjectModalOpen(isOpen)
+    if (isOpen) {
+      setIsMenuOpen(false)
+    }
   }, [])
 
   return (
@@ -53,7 +51,6 @@ function App() {
       <main id="main-content">
         <HeroSection
           heroWords={heroWords}
-          activeWordIndex={activeWordIndex}
           languageItems={languageItems}
           socialLinks={socialLinks}
         />
@@ -65,12 +62,7 @@ function App() {
         <ProjectsSection
           filters={projectFilters}
           projects={projects}
-          onModalOpenChange={(isOpen) => {
-            setIsProjectModalOpen(isOpen)
-            if (isOpen) {
-              setIsMenuOpen(false)
-            }
-          }}
+          onModalOpenChange={handleModalOpenChange}
         />
         <CertificationsSection />
         <ContactSection />

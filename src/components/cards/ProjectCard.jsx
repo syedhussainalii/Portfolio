@@ -8,6 +8,7 @@ const ProjectCard = memo(({
   category,
   description,
   technologies,
+  project,
   onOpen,
 }) => {
   const shouldReduceMotion = useReducedMotion()
@@ -19,7 +20,7 @@ const ProjectCard = memo(({
       transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <div className="project-card-image-wrapper">
-        <img className="project-card-image" alt={alt} src={thumbnail} />
+        <img className="project-card-image" alt={alt} src={thumbnail} loading="lazy" decoding="async" />
       </div>
       <div className="project-card-body">
         <span className="project-card-badge">{category}</span>
@@ -38,7 +39,7 @@ const ProjectCard = memo(({
         <button
           className="project-card-button"
           type="button"
-          onClick={onOpen}
+          onClick={(event) => onOpen(project, event)}
           aria-label={`View details of ${title}`}
         >
           View Details

@@ -1,7 +1,18 @@
+import { useEffect, useState } from 'react'
 import HeroContent from './HeroContent'
 import HeroImage from './HeroImage'
 
-function HeroSection({ heroWords, activeWordIndex }) {
+function HeroSection({ heroWords }) {
+  const [activeWordIndex, setActiveWordIndex] = useState(0)
+
+  useEffect(() => {
+    const wordTimer = window.setInterval(() => {
+      setActiveWordIndex((currentIndex) => (currentIndex + 1) % heroWords.length)
+    }, 2200)
+
+    return () => window.clearInterval(wordTimer)
+  }, [heroWords.length])
+
   return (
     <section
       id="home"

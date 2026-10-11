@@ -78,9 +78,9 @@ function CertificationsSection() {
 
               {/* Cards */}
               <div className="certifications-section single-section">
-                <Reveal cascade className="row">
+                <div className="row">
                   {filteredCertificates.map((item) => (
-                    <RevealChild
+                    <div
                       key={item.title}
                       className="col-12 col-md-6 col-xl-4 certification-card-col"
                     >
@@ -129,9 +129,9 @@ function CertificationsSection() {
                           </a>
                         </div>
                       </motion.article>
-                    </RevealChild>
+                    </div>
                   ))}
-                </Reveal>
+                </div>
               </div>
             </div>
           </div>

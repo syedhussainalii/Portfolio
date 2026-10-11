@@ -4,47 +4,18 @@ import ProjectCard from '../cards/ProjectCard'
 import { Reveal, RevealChild } from '../ui/Reveal'
 import { SectionHeading } from '../ui/SectionHeading'
 
+const PROJECTS_VISIBLE_LIMIT = 9
+
 function ProjectsSection({ filters, projects, onModalOpenChange }) {
+  const allFilters = [{ label: 'All', value: 'all' }, ...filters]
   const shouldReduceMotion = useReducedMotion()
-  const sectionRef = useRef(null)
   const lastActiveElementRef = useRef(null)
   const modalCloseButtonRef = useRef(null)
   
-  const [isVisible, setIsVisible] = useState(false)
   const [activeFilter, setActiveFilter] = useState('ui-ux')
-  const [displayFilter, setDisplayFilter] = useState('ui-ux')
-  const [transitionPhase, setTransitionPhase] = useState('idle')
+  const [isExpanded, setIsExpanded] = useState(false)
   const [selectedProject, setSelectedProject] = useState(null)
   const [isClosing, setIsClosing] = useState(false)
-  const transitionTimerRef = useRef(null)
-
-  // IntersectionObserver to trigger animation when visible
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.15 }
-    )
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
-    }
-
-    return () => observer.disconnect()
-  }, [])
-
-  // Cleanup transition timers on unmount
-  useEffect(() => {
-    return () => {
-      if (transitionTimerRef.current) {
-        window.clearTimeout(transitionTimerRef.current)
-      }
-    }
-  }, [])
 
   // Lock background scroll when modal is active
   useEffect(() => {
@@ -72,32 +43,21 @@ function ProjectsSection({ filters, projects, onModalOpenChange }) {
     }
   }, [selectedProject, isClosing])
 
-  // Smooth filtering transitions matching Tech Stack logic
-  const handleFilterChange = (nextFilter) => {
-    if (nextFilter === activeFilter) {
-      return
-    }
-
-    if (transitionTimerRef.current) {
-      window.clearTimeout(transitionTimerRef.current)
-    }
-
+  const handleFilterChange = useCallback((nextFilter) => {
     setActiveFilter(nextFilter)
-    setTransitionPhase('leaving')
-
-    transitionTimerRef.current = window.setTimeout(() => {
-      setDisplayFilter(nextFilter)
-      setTransitionPhase('entering')
-
-      window.requestAnimationFrame(() => {
-        setTransitionPhase('idle')
-      })
-    }, 280)
-  }
+    setIsExpanded(false)
+  }, [])
 
   const visibleProjects = useMemo(() => {
-    return projects.filter((project) => project.category === displayFilter)
-  }, [displayFilter, projects])
+    return activeFilter === 'all'
+      ? projects
+      : projects.filter((project) => project.category === activeFilter)
+  }, [activeFilter, projects])
+
+  const renderedProjects = useMemo(
+    () => isExpanded ? visibleProjects : visibleProjects.slice(0, PROJECTS_VISIBLE_LIMIT),
+    [isExpanded, visibleProjects],
+  )
 
   const handleClose = useCallback(() => {
     setIsClosing(true)
@@ -124,17 +84,16 @@ function ProjectsSection({ filters, projects, onModalOpenChange }) {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [selectedProject, handleClose])
 
-  const handleOpenProject = (project, event) => {
+  const handleOpenProject = useCallback((project, event) => {
     lastActiveElementRef.current = event.currentTarget
     setIsClosing(false)
     setSelectedProject(project)
     onModalOpenChange(true)
-  }
+  }, [onModalOpenChange])
 
   return (
     <section
-      ref={sectionRef}
-      className={`page-section portfolio-section-wrapper${isVisible ? ' is-visible' : ''}`}
+      className="page-section portfolio-section-wrapper"
       id="portfolio"
       aria-labelledby="projects-title"
     >
@@ -160,10 +119,12 @@ function ProjectsSection({ filters, projects, onModalOpenChange }) {
                       cascade
                       style={{ width: 'auto' }}
                     >
-                      {filters.map((filter) => {
-                        const total = projects.filter(
-                          (project) => project.category === filter.value
-                        ).length
+                      {allFilters.map((filter) => {
+                        const total = filter.value === 'all'
+                          ? projects.length
+                          : projects.filter(
+                              (project) => project.category === filter.value
+                            ).length
 
                         const isActive = activeFilter === filter.value
 
@@ -189,10 +150,8 @@ function ProjectsSection({ filters, projects, onModalOpenChange }) {
                   </div>
                 </div>
 
-                {/* Animated Grid Container */}
-                <motion.div className="portfolio-grid-container" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={{ hidden: {}, visible: { transition: { staggerChildren: shouldReduceMotion ? 0 : 0.1 } } }}>
-                  {visibleProjects.map((project, index) => (
-                    <motion.div key={`${displayFilter}-${project.id}`} variants={{ hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] } } }}>
+                <div className="portfolio-grid-container">
+                  {renderedProjects.map((project) => (
                     <ProjectCard
                       key={project.id}
                       title={project.title}
@@ -201,14 +160,24 @@ function ProjectsSection({ filters, projects, onModalOpenChange }) {
                       category={project.category}
                       description={project.description}
                       technologies={project.technologies}
-                      onOpen={(event) => handleOpenProject(project, event)}
-                      isVisible={isVisible}
-                      animationState={transitionPhase}
-                      delay={index * 25}
+                      project={project}
+                      onOpen={handleOpenProject}
                     />
-                    </motion.div>
                   ))}
-                </motion.div>
+                </div>
+
+                {visibleProjects.length > PROJECTS_VISIBLE_LIMIT ? (
+                  <div className="tech-stack-toggle">
+                    <button
+                      type="button"
+                      className="filter-tab"
+                      aria-expanded={isExpanded}
+                      onClick={() => setIsExpanded((expanded) => !expanded)}
+                    >
+                      {isExpanded ? 'View Less' : 'View More'}
+                    </button>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>

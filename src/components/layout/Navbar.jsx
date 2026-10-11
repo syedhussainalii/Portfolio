@@ -20,11 +20,16 @@ function Navbar({
 
   useEffect(() => {
     let ticking = false;
+    let lastScrolled = false;
 
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          setScrolled(window.scrollY > 40);
+          const nextScrolled = window.scrollY > 40;
+          if (nextScrolled !== lastScrolled) {
+            lastScrolled = nextScrolled;
+            setScrolled(nextScrolled);
+          }
           ticking = false;
         });
         ticking = true;
@@ -32,6 +37,7 @@ function Navbar({
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
